@@ -37,7 +37,7 @@ class RecordCreate(BaseModel):
     category: str
     date: str
     notes: Optional[str] = None
-
+    created_by: str 
 
 class RecordUpdate(BaseModel):
     """Used when updating a record — all fields optional"""

@@ -98,7 +98,7 @@ def delete_one(user_id:str, role: str = Depends(get_current_user)):
     return {"message": "user deleted"}
 
 @app.post("/records")
-def add_record(record: RecordCreate, created_by: str, role: str = Depends(get_current_user)):
+def add_record(record: RecordCreate, role: str = Depends(get_current_user)):
     if role not in ["admin", "analyst"]:
         raise HTTPException(status_code=403, detail="Not authorized")
     doc = {
@@ -108,7 +108,7 @@ def add_record(record: RecordCreate, created_by: str, role: str = Depends(get_cu
         "category": record.category,
         "date": record.date,
         "notes": record.notes,
-        "created_by": created_by,          
+        "created_by": record.created_by,          
         "created_at": datetime.now()
     }
     records_collection.insert_one(doc)
