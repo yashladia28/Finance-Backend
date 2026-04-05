@@ -115,10 +115,11 @@ def add_record(record: RecordCreate, created_by: str, role: str = Depends(get_cu
     return {"message": "record created"}
 
 @app.get("/records")
-def get_records(type: Optional[str] = None, category: Optional[str] = None, date: Optional[str] = None, role: str = Depends(get_current_user)):
+def get_records(type: Optional[str] = None,page: Optional[int] = 1,limit: Optional[int] = 10, category: Optional[str] = None, date: Optional[str] = None, role: str = Depends(get_current_user)):
     if role not in ["admin", "analyst","viewer"]:
         raise HTTPException(status_code=403, detail="Not authorized")
     query = {}
+    skip = (page - 1) * limit
     if type:
         query["type"] = type
     if category:
@@ -126,7 +127,7 @@ def get_records(type: Optional[str] = None, category: Optional[str] = None, date
     if date:
         query["date"] = date
     data = []
-    for record in records_collection.find(query):
+    for record in records_collection.find(query).skip(skip).limit(limit):
         doc = {
             "id": str(record["_id"]),
             "title": record["title"],
@@ -139,7 +140,11 @@ def get_records(type: Optional[str] = None, category: Optional[str] = None, date
             "created_at": record["created_at"]
         }
         data.append(doc)
-    return data
+    return {
+        "page": page,
+        "limit": limit,
+        "data": data
+    }
 
 @app.get("/records/{record_id}")
 def get_record_by_id(record_id:str, role: str = Depends(get_current_user)):

@@ -52,7 +52,7 @@ x-user-id: <user_id>
 | Method | Route | Access | Description |
 |---|---|---|---|
 | POST | /records | admin, analyst | Create a financial record |
-| GET | /records | all roles | Get all records (supports ?type, ?category, ?date filters) |
+| GET | /records | all roles | Get records (filters: ?type, ?category, ?date — pagination: ?page, ?limit) |
 | GET | /records/{id} | all roles | Get record by ID |
 | PATCH | /records/{id} | admin, analyst | Update a record |
 | DELETE | /records/{id} | admin | Delete a record |
